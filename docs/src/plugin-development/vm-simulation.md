@@ -1,9 +1,9 @@
 # VM Simulation
-As mentioned in the [Slang documentation](slang.md), Slang is a Smalltalk subset.
+As mentioned in the [Slang documentation](./Slang.md), Slang is a Smalltalk subset.
 This means it can also be executed as normal Smalltalk code and use the normal Smalltalk tooling.
 
 Using this mechanism, almost all of the VM code can therefore be executed as if it were normal Smalltalk code.
-Combine that with a few methods that replicate behavior that is normally implemented in native C code, and you can have a VM running entirely inside the [VMMaker image](vmmaker-image-creation.md).
+Combine that with a few methods that replicate behavior that is normally implemented in native C code, and you can have a VM running entirely inside the [VMMaker image](./vmmaker-image-creation.md).
 
 The VMMaker image contains a "Simulation Workspace" that contains code snippets for starting such a simulation.
 Usually you should use the SpurReader image (see vmmaker-image-creation.md) as the image to load into this Simulation, as it is relatively simple and easy to control.
@@ -29,6 +29,6 @@ Code for these plugins can be found in multiple places:
 ### Package: VMMaker-JITSimulation
 Contains all the support code necessary for simulation.
 
-### Class: CogVMSimulator
+### Class: [CogVMSimulator](squeak://CogVMSimulator)
 The main entry point for VM simulation.
 See the **class comment** for examples.

@@ -24,10 +24,4 @@ You can try to get the entire script running, or read the scripts and perform th
 The SpurReader image isn't entirely necessary, but very helpful when simulating the VM. (See: `vm-simulation.md`)
 
 It is a very simple image that only waits for input from stdout and then evaluates the given input.
-Note that the input for the SpurReader image is given in `.st` format. Which means code segments are terminated with exclamation marks (`!`).
-
-So to check whether your SpurReader image works as intended, launch it from the command line and enter:\
-`3+4!`.
-The result should then be `7`.
-
-
+Note that the input for the SpurReader image is given in `.st` format. Which means code segments are terminated with exclamation marks (`

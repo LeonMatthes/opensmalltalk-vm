@@ -1,5 +1,5 @@
-VM source directories
----------------------
+# VM source directories
+
 The Slang output of the various VMs are kept in "vm source" directories.  These
 C sources define the core VM (the Smalltalk execution engine and the memory
 manager), and a substantial set of "plugins" that provide interfaces to various
@@ -47,8 +47,7 @@ Each vm source directory contains several files, a subset of the following:
 	vmCallback.h		- the structure of the VM's VMCallbackContext
 ```
 
-Platform build directories
---------------------------
+# Platform build directories
 The current "official" build directories are of the form
 building/OS_WordSize_Processor, and include
 ```
@@ -109,8 +108,8 @@ products directory tree.  The packaging scripts may choose to include Smalltalk
 source files included in the sources directory.
 
 
-Other directories
------------------
+# Other directories
+
 The platforms directory contains the associated platform-specific files that
 combine with the Slang-generated source to produce complete VMs.  The structure
 is

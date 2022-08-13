@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Garbage Collection - OpenSmalltalk-VM documentation</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../favicon.svg">
+                        <link rel="shortcut icon" href="../favicon.png">
+                <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+                <link rel="stylesheet" href="../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Building the VM</li><li class="chapter-item expanded "><a href="../build-system.html"><strong aria-hidden="true">1.</strong> Build system</a></li><li class="chapter-item expanded "><a href="../repository-structure.html"><strong aria-hidden="true">2.</strong> Repository Structure</a></li><li class="chapter-item expanded "><a href="../vmmaker-image-creation.html"><strong aria-hidden="true">3.</strong> Creating a VMMaker image</a></li><li class="chapter-item expanded affix "><li class="part-title">Plugin development guide</li><li class="chapter-item expanded "><a href="../plugin-development/plugin-creation.html"><strong aria-hidden="true">4.</strong> Plugin Creation</a></li><li class="chapter-item expanded "><a href="../plugin-development/Slang.html"><strong aria-hidden="true">5.</strong> Slang (C code generation)</a></li><li class="chapter-item expanded affix "><li class="part-title">VM development</li><li class="chapter-item expanded "><a href="../vm-development/garbage-collection.html" class="active"><strong aria-hidden="true">6.</strong> Garbage Collection</a></li><li class="chapter-item expanded "><a href="../vm-development/vm-simulation.html"><strong aria-hidden="true">7.</strong> VM simulation</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">OpenSmalltalk-VM documentation</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="young-and-old-space"><a class="header" href="#young-and-old-space">Young and Old Space</a></h2>
+<p>Objects in Squeak are separated into a young and old space.
+Newly allocated objects are (almost always) allocated in the young space.
+When more space is needed, the young space is scavenged, and young objects that are no longer referenced are freed.</p>
+<p>Young objects that survive multiple scavenging phases will be promoted into old space.</p>
+<p>Old space is usually garbage collected when the VM runs out of allocated memory. (See Mark and Compact).</p>
+<h2 id="mark-and-compact"><a class="header" href="#mark-and-compact">Mark and Compact</a></h2>
+<p>Squeak currently does a stop-the-world Mark and Compact garbage collection.
+See <a href="https://en.wikipedia.org/wiki/Mark%E2%80%93compact_algorithm">Wikipedia</a>.</p>
+<h1 id="important-classes"><a class="header" href="#important-classes">Important Classes</a></h1>
+<h2 id="a-hrefsqueakspurmemorymanagerspurmemorymanagera"><a class="header" href="#a-hrefsqueakspurmemorymanagerspurmemorymanagera"><a href="squeak://SpurMemoryManager">SpurMemoryManager</a></a></h2>
+<p>Called whenever garbage collection needs to be started.</p>
+<p>Does marking in a Mark&amp;Compact operation.
+During marking, Forwarders are resolved.</p>
+<p>Good entry points:</p>
+<ul>
+<li><a href="squeak://SpurMemoryManager%3E%3E#markAndTrace:">SpurMemoryManager&gt;&gt;#markAndTrace:</a></li>
+<li><a href="squeak://SpurMemoryManager%3E%3E#globalGarbageCollect">SpurMemoryManager&gt;&gt;#globalGarbageCollect</a></li>
+<li><a href="squeak://SpurMemoryManager%3E%3E#markLoopFrom:">SpurMemoryManager&gt;&gt;#markLoopFrom:</a></li>
+</ul>
+<p><em>Future</em>: Marking might be extracted from the SpurMemoryManager and moved into different marking strategies.</p>
+<ul>
+<li>SpurMarker (abstract super class)</li>
+<li>SpurAllAtOnceMarker</li>
+<li>SpurIncrementalMarker</li>
+</ul>
+<h2 id="a-hrefsqueakspurgenerationscavengerspurgenerationscavengera"><a class="header" href="#a-hrefsqueakspurgenerationscavengerspurgenerationscavengera"><a href="squeak://SpurGenerationScavenger">SpurGenerationScavenger</a></a></h2>
+<p>Scavanges the young space.</p>
+<p><a href="squeak://ToolSet%20browseClassCommentOf:SpurGenerationScavenger">Class comment</a> includes a link to a paper that explains the algorithm used.</p>
+<p>Entry points:
+<a href="squeak://SpurGenerationScavenger%3E%3E#scavenge:">SpurGenerationScavenger&gt;&gt;#scavenge:</a></p>
+<h2 id="a-hrefsqueakspurplanningcompactorspurplanningcompactora"><a class="header" href="#a-hrefsqueakspurplanningcompactorspurplanningcompactora"><a href="squeak://SpurPlanningCompactor">SpurPlanningCompactor</a></a></h2>
+<p>Does compaction on old space.</p>
+<h3 id="3-phases"><a class="header" href="#3-phases">3 Phases</a></h3>
+<ol>
+<li>Plan where things go</li>
+<li>Update the pointers</li>
+<li>Relocate</li>
+</ol>
+<p>Entry Points:</p>
+<ul>
+<li><a href="squeak://SpurPlanningCompactor%3E%3E#compact">SpurPlanningCompactor&gt;&gt;#compact</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../plugin-development/Slang.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../vm-development/vm-simulation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../plugin-development/Slang.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../vm-development/vm-simulation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

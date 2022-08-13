@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Repository Structure - OpenSmalltalk-VM documentation</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Building the VM</li><li class="chapter-item expanded "><a href="build-system.html"><strong aria-hidden="true">1.</strong> Build system</a></li><li class="chapter-item expanded "><a href="repository-structure.html" class="active"><strong aria-hidden="true">2.</strong> Repository Structure</a></li><li class="chapter-item expanded "><a href="vmmaker-image-creation.html"><strong aria-hidden="true">3.</strong> Creating a VMMaker image</a></li><li class="chapter-item expanded affix "><li class="part-title">Plugin development guide</li><li class="chapter-item expanded "><a href="plugin-development/plugin-creation.html"><strong aria-hidden="true">4.</strong> Plugin Creation</a></li><li class="chapter-item expanded "><a href="plugin-development/Slang.html"><strong aria-hidden="true">5.</strong> Slang (C code generation)</a></li><li class="chapter-item expanded affix "><li class="part-title">VM development</li><li class="chapter-item expanded "><a href="vm-development/garbage-collection.html"><strong aria-hidden="true">6.</strong> Garbage Collection</a></li><li class="chapter-item expanded "><a href="vm-development/vm-simulation.html"><strong aria-hidden="true">7.</strong> VM simulation</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">OpenSmalltalk-VM documentation</h1>
+
+                    <div class="right-buttons">
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="vm-source-directories"><a class="header" href="#vm-source-directories">VM source directories</a></h1>
+<p>The Slang output of the various VMs are kept in &quot;vm source&quot; directories.  These
+C sources define the core VM (the Smalltalk execution engine and the memory
+manager), and a substantial set of &quot;plugins&quot; that provide interfaces to various
+external facilities via Smalltalk primitive methods.  Each vm source directory
+is specific to a particular VM, be it Squeak Cog Spur, or V3 Stack, etc.
+The plugins can be shared between VMs, choosing the set of plugins to include
+in a VM at build time (see plugins.int &amp; plugins.ext in build directories).</p>
+<p>The VM source are in directories such as</p>
+<pre><code>	src/v3.sista		- Smalltalk Sista V3
+	src/spur32.sista	- Smalltalk Sista Spur
+	src/spur32.cog 		- Smalltalk Cog Spur
+	src/spur64.cog 		- Smalltalk Cog Spur 64-bit
+	src/spur32.stack 	- Smalltalk Stack Spur
+	src/spur64.stack 	- Smalltalk Stack Spur 64-bit
+	src/v3.cog			- Smalltalk Cog V3
+	src/v3.stack 		- Smalltalk Stack V3
+</code></pre>
+<p>All plugins are in the directory</p>
+<pre><code>	src/plugins
+</code></pre>
+<p>These contain many, but not all, of the plugins available for the VM.  Others
+can be found in Cog, or in various Monticello packages in various repositories.</p>
+<p>Each vm source directory contains several files, a subset of the following:</p>
+<pre><code>	cogit.c				- the JIT; a Cogit cooperates with a CoInterpreter.
+                          This simply includes a processor-specific JIT file
+	cogitIA32.c et al   - relevant processor-specific JIT, selected by cogit.c
+	cogit.h				- the Cogit's API, as used by the CoInterpreter
+	cogmethod.h			- the structure of a CogMethod, the output of the Cogit
+	cointerp.c			- the CoInterpreter's source file
+	cointerp.h			- the API of the CoInterpreter, as used by the Cogit
+	cointerpmt.c		- the multi-threaded CoInterpreterMT's source file
+	cointerpmt.h		- the API of the CoInterpreterMT, as used by the Cogit
+	gcc3x-cointerp.c	- cointerp.c massaged to interpret faster if using gcc
+	gcc3x-cointerpmt.c	- ditto for cointerpmt.c
+	gcc3x-interp.c		- ditto for interp.c
+	interp.c			- the StackInterpreter's source file
+	interp.h			- defines for the VM configuration, word size, etc
+	vmCallback.h		- the structure of the VM's VMCallbackContext
+</code></pre>
+<h1 id="platform-build-directories"><a class="header" href="#platform-build-directories">Platform build directories</a></h1>
+<p>The current &quot;official&quot; build directories are of the form
+building/OS_WordSize_Processor, and include</p>
+<pre><code>	building/linux32x86	- uses autoconf, gcc and make
+	building/macos32x86	- 32-bit Mac OS X using clang and gmake
+	building/macos64x64	- 64-bit Mac OS X using clang and gmake
+	building/win32x86		- uses cygwin, gcc and gmake
+</code></pre>
+<p>More can be added as required.  In each there is a HowToBuild that describes
+the necessary steps to compile a VM.</p>
+<p>Within each building/OS_WordSize_Processor directory are a set of build directories
+for specific configurations of Cog, and for support code and makefiles.  For
+example, there exist</p>
+<pre><code>	building/macos32x86/squeak.cog.spur   - A Cog JIT VM with Squeak branding,
+                                         using the Spur memory manager.
+	building/macos32x86/squeak.stack.spur - A Stack interpreter VM with Squeak
+                                         branding, and the Spur memory manager.
+	building/macos32x86/squeak.cog.v3     - A Cog JIT VM with Squeak branding,
+                                         using the old Squeak memory manager.
+	building/macos32x86/pharo.cog.spur    - A Cog JIT VM with Pharo branding and
+                                         plugins (not yet implemented) using the
+                                         Spur memory manager.
+</code></pre>
+<pre><code>etc.
+</code></pre>
+<p>There exist</p>
+<pre><code>    building/macos64x64/bochsx86 - Support libraries for the BochsIA32Plugin which
+                                is used to develop Cog itself.
+    building/macos64x64/bochsx64 - Support libraries for the BochsX64Plugin which
+                                is used to develop Cog itself.
+    building/macos64x64/gdbarm32 - Support libraries for the GdbARMPlugin which
+                                is used to develop Cog itself.
+    building/macos64x64/gdbarm64 - Support libraries for the GdbARMv8Plugin which
+                                is used to develop Cog itself.
+</code></pre>
+<p>and the intention is to add such directories to contain e.g. support code for
+the Pharo Cairo and Freetype plugins, and anything else needed.  By placing
+support directories in each build directory they can be shared between various
+branded VM builds, avoiding duplication.</p>
+<p>There exist</p>
+<pre><code>	building/macos32x86/common - Gnu Makefiles for building the various branded VMs
+	building/macos64x64/common - Gnu Makefiles for building the various branded VMs
+	building/win32x86/common   - Gnu Makefiles for building the various branded VMs
+	building/win64x64/common   - Gnu Makefiles for building the various branded VMs
+</code></pre>
+<p>And the intention is to add building/linuxNN????/common as soon as possible to
+use Gnu Makefiles to build all VMs on all platforms.</p>
+<p>The scripts directory contains various scripts for validating and checking-in
+generated sources, packaging builds into installable artifacts (tar, msi, zip),
+and so on.  The linux builds and the packaging scripts produce outputs in the
+products directory tree.  The packaging scripts may choose to include Smalltalk
+source files included in the sources directory.</p>
+<h1 id="other-directories"><a class="header" href="#other-directories">Other directories</a></h1>
+<p>The platforms directory contains the associated platform-specific files that
+combine with the Slang-generated source to produce complete VMs.  The structure
+is</p>
+<pre><code>	platforms/Cross/vm
+	platforms/Cross/plugins
+	platforms/iOS/vm
+	platforms/iOS/plugins
+	platforms/unix/vm*
+	platforms/unix/plugins
+	platforms/win32/vm
+	platforms/win32/plugins
+</code></pre>
+<p>Each vm directory contains support for the core VM.  Each plugin directory
+contains run-time and build-time support for various plugins.</p>
+<p>The processors directory contains the source for various processor simulators.
+The JIT is developed in Smalltalk by using one of these processor simulators
+to execute the code the JIT produces.  Currently x86 &amp; x86-64 are derived from
+Bochs, and ARMv6/v7 &amp; ARMv8 are derived from gdb.</p>
+<p>Finally the image directory contains scripts that will build a &quot;VMMaker&quot; image,
+a Squeak Smalltalk image containing all the packages that comprise the Cog
+system, suitable for developing the VM and for generating (or updating) the
+sources in the vm source directories. There is also a script for generating a
+64-bit Spur image from a 32-bit Spur image.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="build-system.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="vmmaker-image-creation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="build-system.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="vmmaker-image-creation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

@@ -119,12 +119,9 @@ Learning about the VM
 ---------------------
 As the codebase of the VM is split between this repository and the Slang sources that live in the image, finding the right entry points to get started can be difficult.
 
-Luckily, this repository contains some high-level documentation in the `docs` folder to help you get started.
+Luckily, this repository contains some high-level documentation in the `docs/src` folder to help you get started.
 
-I highly encourage you to check out this folder and at least read the "vmmaker-image-creation.md" file.
-
-Other good starting points:
-- `docs/repository-structure.md`
+The easiest way to read this documentation is to install [mdbook](https://rust-lang.github.io/mdBook/) and run `mdbook serve --open` from the `docs/src` folder.
 
 Leon Matthes
 July 2022

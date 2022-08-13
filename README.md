@@ -121,7 +121,12 @@ As the codebase of the VM is split between this repository and the Slang sources
 
 Luckily, this repository contains some high-level documentation in the `docs/src` folder to help you get started.
 
-The easiest way to read this documentation is to install [mdbook](https://rust-lang.github.io/mdBook/) and run `mdbook serve --open` from the `docs/src` folder.
+The easiest way to read this documentation is to [visit our GH pages](https://leonmatthes.github.io/opensmalltalk-vm/). <!-- TODO: Update links to main github pages -->
+If you want, you can also read the documentation from within Squeak.
+For this, follow the guide on [Creating your own VMMaker image](https://leonmatthes.github.io/opensmalltalk-vm/vmmaker-image-creation.html).<!-- TODO: Update links to main github pages -->
+
+Alternatively you can install [mdbook](https://rust-lang.github.io/mdBook/) and run `mdbook serve --open` from the `docs/src` folder.
+
 
 Leon Matthes
 July 2022

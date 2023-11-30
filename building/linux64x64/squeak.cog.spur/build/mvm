@@ -5,7 +5,7 @@ INSTALLDIR=sqcogspur64linuxht
 # Some gcc versions create a broken VM using -O2
 OPT="-g -O2 -DNDEBUG -DDEBUGVM=0"
 
-CFLAGS="$OPT -msse2 -DCOGMTVM=0"
+CFLAGS="$OPT -msse2"
 LIBS=""
 LDFLAGS=""
 case $(uname -s) in
@@ -20,6 +20,11 @@ esac
 CC=gcc
 if [ -x /usr/bin/clang ]; then CC=clang; fi
 
+if [[ $# -ge 1 && $1 -eq "-mt" ]]; then
+	ENABLE_MT=1; shift
+	INSTALLDIR=sqcogspur64linuxht-mt
+fi
+
 if [ $# -ge 1 ]; then
 	INSTALLDIR="$1"; shift
 fi
@@ -32,15 +37,32 @@ n|no|N|NO)	echo "ok but this isn't safe!!";;
 *)			test -f Makefile && make reallyclean
 esac
 ../../../../scripts/copylinuxpluginspecfiles
-test -f config.h || ../../../../platforms/unix/config/configure --without-npsqueak \
-		--with-vmversion=5.0 \
-		--with-src=src/spur64.cog \
-		--with-scriptname=spur64 \
-	TARGET_ARCH="-m64" \
-	CC=$CC \
-	CFLAGS="$CFLAGS" \
-	LIBS="$LIBS" \
-	LDFLAGS="$LDFLAGS"
+
+if [ -z "$ENABLE_MT" ]
+then
+	# Multi-threading disabled
+	test -f config.h || ../../../../platforms/unix/config/configure --without-npsqueak \
+			--with-vmversion=5.0 \
+			--with-src=src/spur64.cog \
+			--with-scriptname=spur64 \
+		TARGET_ARCH="-m64" \
+		CC=$CC \
+		CFLAGS="$CFLAGS -DCOGMTVM=0" \
+		LIBS="$LIBS" \
+		LDFLAGS="$LDFLAGS"
+else
+	# Multi-threading enabled
+	test -f config.h || ../../../../platforms/unix/config/configure --without-npsqueak \
+			--enable-multithreading \
+			--with-vmversion=5.0 \
+			--with-src=src/spur64.cog \
+			--with-scriptname=spur64 \
+		TARGET_ARCH="-m64" \
+		CC=$CC \
+		CFLAGS="$CFLAGS" \
+		LIBS="$LIBS" \
+		LDFLAGS="$LDFLAGS"
+fi
 rm -f vm/sqUnixMain.o # nuke version info
 rm -rf ../../../../products/$INSTALLDIR
 # prefer make install prefix=`readlink -f \`pwd\`/../../../../products/$INSTALLDIR`

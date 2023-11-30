@@ -52,6 +52,11 @@ AC_DEFUN([AC_CHECK_VMM_DIR],[
 	  vmmcheck file -f ${vmmdir}/cointerp.c
 	  vmmcheck file -f ${vmmdir}/cointerp.h
 	  vmmcheck file -f ${vmmdir}/gcc3x-cointerp.c
+    if test "$multithreading" = yes ; then
+	  vmmcheck file -f ${vmmdir}/cointerpmt.c
+	  vmmcheck file -f ${vmmdir}/cointerpmt.h
+	  vmmcheck file -f ${vmmdir}/gcc3x-cointerpmt.c
+    fi
   else
 	  vmmcheck file -f ${vmmdir}/interp.c
 	  vmmcheck file -f ${vmmdir}/gcc3x-interp.c
@@ -122,7 +127,18 @@ else
 fi])
 
 AC_DEFUN([AC_GNU_INTERP],
-[if test -z "$INTERP" ; then if test "$cogit" = yes ; then INTERP="cointerp"; else INTERP="interp"; fi; fi
+[if test -z "$INTERP" ; then
+  if test "$cogit" = yes ; then
+    if test "$multithreading" = yes ; then
+      INTERP="cointerpmt"
+      AC_DEFINE([COGMTVM], [1], [Multithreading enabled])
+    else
+      INTERP="cointerp"
+    fi
+  else
+    INTERP="interp"
+  fi
+fi
 AC_SUBST(INTERP)
 AC_PROG_AWK
 AC_MSG_CHECKING(whether we can compile gcc3x-$INTERP)

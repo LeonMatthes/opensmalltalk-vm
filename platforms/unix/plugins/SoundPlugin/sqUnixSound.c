@@ -191,10 +191,10 @@ sqInt snd_SetRecordBufferFrameCount(sqInt frameCount) { return -1; }
 int   snd_GetRecordLevel(void)                      { return -1; }
 sqInt getNumberOfSoundPlayerDevices(void)           { return -1; }
 sqInt getNumberOfSoundRecorderDevices(void)         { return -1; }
-char *getDefaultSoundPlayer(void)                   { return -1; }
-char *getDefaultSoundRecorder(void)                 { return -1; }
-char *getSoundPlayerDeviceName(sqInt i)             { return -1; }
-char *getSoundRecorderDeviceName(sqInt i)           { return -1; }
+char *getDefaultSoundPlayer(void)                   { return "No sound player found!"; }
+char *getDefaultSoundRecorder(void)                 { return "No sound recoder found!"; }
+char *getSoundPlayerDeviceName(sqInt i)             { return "No sound player device found!"; }
+char *getSoundRecorderDeviceName(sqInt i)           { return "No sound recorder device found!"; }
 void  setDefaultSoundPlayer(char *deviceName)       { return ; }
 void  setDefaultSoundRecorder(char *deviceName)     { return ; }
 #endif /* SqSoundVersionMajor > 1 || SqSoundVersionMinor >= 2 */

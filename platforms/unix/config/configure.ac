@@ -116,6 +116,12 @@ AC_ARG_ENABLE(cogit,
 	[cogit="yes"])
 AC_SUBST(cogit)
 
+AC_ARG_ENABLE(multithreading,
+	AS_HELP_STRING([--enable-multithreading], [compile a multi-threaded VM (needs cogit enabled)]),
+	[multithreading="$enableval"],
+	[multithreading="no"])
+AC_SUBST(multithreading)
+
 # Check the generated src dir looks sane
 
 AC_CHECK_VMM_DIR

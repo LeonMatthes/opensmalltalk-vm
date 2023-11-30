@@ -843,6 +843,7 @@ with_vmmcfg
 with_scriptname
 enable_cogit
 enable_multithreading
+	  __enable_multithreading compile a multi_threaded VM (needs cogit enabled)
 with_gnu_awk
 with_gnu_as
 with_rfb
@@ -1515,7 +1516,7 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-cogit         compile a cogit VM (default=enabled)
-  --enable-multithreading compile a multi-threaded VM (needs cogit enabled)
+multithreading="$enableval"
   --disable-largefile     omit support for large files
   --disable-epoll         Do not use epoll even if supported (default: try to
                           use)
@@ -12553,12 +12554,13 @@ fi
 
 
 
-# Check whether --enable-multithreading was given.
-if test ${enable_multithreading+y}
+# Check whether --enable-multithreading
+	  --enable-multithreading compile a multi-threaded VM (needs cogit enabled) was given.
+if test ${enable_multithreading
+	  __enable_multithreading compile a multi_threaded VM (needs cogit enabled)+y}
 then :
-  enableval=$enable_multithreading; multithreading="$enableval"
-else $as_nop
-  multithreading="no"
+  enableval=$enable_multithreading
+	  __enable_multithreading compile a multi_threaded VM (needs cogit enabled); multithreading="no"
 fi
 
 

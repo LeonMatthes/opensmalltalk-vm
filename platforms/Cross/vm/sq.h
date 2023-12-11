@@ -1,21 +1,21 @@
 /****************************************************************************
-*   PROJECT: Common include for BackToTheFuture/Squeak/Cog/OpenSmalltalk VM
-*   FILE:    sq.h
-*
-*			See comments associated with STACKVM, COGVM, SPURVM, COGMTVM,
-*			below for an overview of various VM flavours & features.
-*/
+ *   PROJECT: Common include for BackToTheFuture/Squeak/Cog/OpenSmalltalk VM
+ *   FILE:    sq.h
+ *
+ *			See comments associated with STACKVM, COGVM, SPURVM,
+ *COGMTVM, below for an overview of various VM flavours & features.
+ */
 
 #ifndef _SQ_H
 #define _SQ_H
-
 
 #ifdef HAVE_CONFIG_H
 /* If HAVE_CONFIG_H is given (most presumably on the command line)
  * it is safe to include the (#define-only) config.h.
  * On prominent platforms, these defines must precede any inlcudes.
  * To quote feature_test_macros(7) on Linux:
- *   NOTE:  In  order to be effective, a feature test macro must be defined before including any header files.
+ *   NOTE:  In  order to be effective, a feature test macro must be defined
+ * before including any header files.
  *
  * config.h provides these macros, either manually specified or
  * through means of configuration (eg. autoconf/configure).
@@ -26,39 +26,38 @@
 #include "config.h"
 #endif
 
-
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <limits.h>
 
 #include "sqConfig.h"
 
-#include <math.h>
 #include "sqMathShim.h"
+#include <math.h>
 
 #include "sqMemoryAccess.h"
 #include "sqVirtualMachine.h"
 
 #if !defined(IMAGE_DIALECT_NAME)
-# if NewspeakVM
-#	define IMAGE_DIALECT_NAME "Newspeak"
-#	define DEFAULT_IMAGE_NAME "newspeak.image"
-#	define IMAGE_ENV_NAME "NEWSPEAK_IMAGE"
-# elif CuisVM
-#	define IMAGE_DIALECT_NAME "CuisVM"
-#	define DEFAULT_IMAGE_NAME "CuisVM.image"
-#	define IMAGE_ENV_NAME "CUIS_IMAGE"
-# elif PharoVM
-#	define IMAGE_DIALECT_NAME "Pharo"
-#	define DEFAULT_IMAGE_NAME "Pharo.image"
-#	define IMAGE_ENV_NAME "PHARO_IMAGE"
-# else
-#	define IMAGE_DIALECT_NAME "Squeak"
-#	define DEFAULT_IMAGE_NAME "squeak.image"
-#	define IMAGE_ENV_NAME "SQUEAK_IMAGE"
-# endif
+#if NewspeakVM
+#define IMAGE_DIALECT_NAME "Newspeak"
+#define DEFAULT_IMAGE_NAME "newspeak.image"
+#define IMAGE_ENV_NAME "NEWSPEAK_IMAGE"
+#elif CuisVM
+#define IMAGE_DIALECT_NAME "CuisVM"
+#define DEFAULT_IMAGE_NAME "CuisVM.image"
+#define IMAGE_ENV_NAME "CUIS_IMAGE"
+#elif PharoVM
+#define IMAGE_DIALECT_NAME "Pharo"
+#define DEFAULT_IMAGE_NAME "Pharo.image"
+#define IMAGE_ENV_NAME "PHARO_IMAGE"
+#else
+#define IMAGE_DIALECT_NAME "Squeak"
+#define DEFAULT_IMAGE_NAME "squeak.image"
+#define IMAGE_ENV_NAME "SQUEAK_IMAGE"
+#endif
 #endif
 
 /* Platform-dependent millisecond clock macros. */
@@ -134,17 +133,18 @@ usqLong ioUTCMicroseconds(void);
 usqLong ioLocalMicrosecondsNow(void);
 usqLong ioLocalMicroseconds(void);
 usqLong ioUTCStartMicroseconds(void);
-sqInt	ioLocalSecondsOffset(void);
-void	ioUpdateVMTimezone(void);
-void	ioSynchronousCheckForEvents(void);
-void	checkHighPriorityTickees(usqLong);
-# if ITIMER_HEARTBEAT		/* Hack; allow heartbeat to avoid */
+sqInt ioLocalSecondsOffset(void);
+void ioUpdateVMTimezone(void);
+void ioSynchronousCheckForEvents(void);
+void checkHighPriorityTickees(usqLong);
+#if ITIMER_HEARTBEAT        /* Hack; allow heartbeat to avoid */
 extern int numAsyncTickees; /* prodHighPriorityThread unless necessary */
-# endif						/* see platforms/unix/vm/sqUnixHeartbeat.c */
-void	ioGetClockLogSizeUsecsIdxMsecsIdx(sqInt*,void**,sqInt*,void**,sqInt*);
-void	addIdleUsecs(sqInt);
+#endif                      /* see platforms/unix/vm/sqUnixHeartbeat.c */
+void ioGetClockLogSizeUsecsIdxMsecsIdx(sqInt *, void **, sqInt *, void **,
+                                       sqInt *);
+void addIdleUsecs(sqInt);
 
-# if COGVM
+#if COGVM
 /* Cog has already captured CStackPointer before calling this routine.  Record
  * the original value, capture the pointers again and determine if CFramePointer
  * lies between the two stack pointers and hence is likely in use.  This is
@@ -158,8 +158,9 @@ extern int isCFramePointerInUse(usqIntptr_t *cFpPtr, usqIntptr_t *cSpPtr);
  */
 extern void reportMinimumUnusedHeadroom();
 extern void reportMinimumUnusedHeadroomOn(FILE *);
-# endif
-extern void ifValidWriteBackStackPointersSaveTo(void *,void *,char **,char **);
+#endif
+extern void ifValidWriteBackStackPointersSaveTo(void *, void *, char **,
+                                                char **);
 extern void dumpPrimTraceLog();
 extern void dumpPrimTraceLogOn(FILE *);
 #endif /* STACKVM */
@@ -172,17 +173,21 @@ extern void printAllStacksOn(FILE *);
    counter if there is such a thing on this platform (otherwise return 0) */
 sqLong ioHighResClock(void);
 
-/* New filename converting function; used by the interpreterProxy function 
+/* New filename converting function; used by the interpreterProxy function
   ioFilenamefromStringofLengthresolveAliases. Most platforms can ignore the
   resolveAlias boolean - it seems to only be of use by OSX but is crucial there.
 */
-sqInt sqGetFilenameFromString(char *aCharBuffer, char *aFilenameString, sqInt filenameLength, sqInt aBoolean);
+sqInt sqGetFilenameFromString(char *aCharBuffer, char *aFilenameString,
+                              sqInt filenameLength, sqInt aBoolean);
 
 /* Macros to support Mac browser plugin without ugly code in Interpreter. */
 
-#define insufficientMemorySpecifiedError()	error("Insufficient memory for this image")
-#define insufficientMemoryAvailableError()	error("Failed to allocate memory for the heap")
-#define unableToReadImageError()		error("Read failed or premature end of image file")
+#define insufficientMemorySpecifiedError()                                     \
+  error("Insufficient memory for this image")
+#define insufficientMemoryAvailableError()                                     \
+  error("Failed to allocate memory for the heap")
+#define unableToReadImageError()                                               \
+  error("Read failed or premature end of image file")
 #define browserPluginReturnIfNeeded()
 #define browserPluginInitialiseIfNeeded()
 
@@ -222,10 +227,11 @@ sqInt ioExit(void);
 sqInt ioExitWithErrorCode(int);
 sqInt crashInThisOrAnotherThread(sqInt flags);
 sqInt fullDisplayUpdate(void);
-void  ioNoteDisplayChangedwidthheightdepth(void *bitsOrHandle, int w, int h, int d);
+void ioNoteDisplayChangedwidthheightdepth(void *bitsOrHandle, int w, int h,
+                                          int d);
 sqInt ioForceDisplayUpdate(void);
 sqInt ioFormPrint(sqInt bitsAddr, sqInt width, sqInt height, sqInt depth,
-		  double hScale, double vScale, sqInt landscapeFlag);
+                  double hScale, double vScale, sqInt landscapeFlag);
 sqInt ioSetFullScreen(sqInt fullScreen);
 double ioScreenScaleFactor(void);
 sqInt ioScreenSize(void);
@@ -233,15 +239,19 @@ sqInt ioScreenDepth(void);
 sqInt ioSeconds(void);
 sqInt ioSecondsNow(void);
 sqInt ioSetCursor(sqInt cursorBitsIndex, sqInt offsetX, sqInt offsetY);
-sqInt ioSetCursorWithMask(sqInt cursorBitsIndex, sqInt cursorMaskIndex, sqInt offsetX, sqInt offsetY);
-sqInt ioSetCursorARGB(sqInt cursorBitsIndex, sqInt extentX, sqInt extentY, sqInt offsetX, sqInt offsetY);
+sqInt ioSetCursorWithMask(sqInt cursorBitsIndex, sqInt cursorMaskIndex,
+                          sqInt offsetX, sqInt offsetY);
+sqInt ioSetCursorARGB(sqInt cursorBitsIndex, sqInt extentX, sqInt extentY,
+                      sqInt offsetX, sqInt offsetY);
 sqInt ioShowDisplay(sqInt dispBitsIndex, sqInt width, sqInt height, sqInt depth,
-		    sqInt affectedL, sqInt affectedR, sqInt affectedT, sqInt affectedB);
+                    sqInt affectedL, sqInt affectedR, sqInt affectedT,
+                    sqInt affectedB);
 sqInt ioHasDisplayDepth(sqInt depth);
-sqInt ioSetDisplayMode(sqInt width, sqInt height, sqInt depth, sqInt fullscreenFlag);
-char* ioGetLogDirectory(void);
-sqInt ioSetLogDirectoryOfSize(void* lblIndex, sqInt sz);
-char* ioGetWindowLabel(void);
+sqInt ioSetDisplayMode(sqInt width, sqInt height, sqInt depth,
+                       sqInt fullscreenFlag);
+char *ioGetLogDirectory(void);
+sqInt ioSetLogDirectoryOfSize(void *lblIndex, sqInt sz);
+char *ioGetWindowLabel(void);
 sqInt ioSetWindowLabelOfSize(void *lblIndex, sqInt sz);
 sqInt ioGetWindowWidth(void);
 sqInt ioGetWindowHeight(void);
@@ -255,29 +265,29 @@ void ioInitThreads(void);
 
 /* Management of the external semaphore table (max size set at startup) */
 #if !defined(INITIAL_EXT_SEM_TABLE_SIZE)
-# define INITIAL_EXT_SEM_TABLE_SIZE 256
+#define INITIAL_EXT_SEM_TABLE_SIZE 256
 #endif
-int   ioGetMaxExtSemTableSize(void);
-void  ioSetMaxExtSemTableSize(int);
+int ioGetMaxExtSemTableSize(void);
+void ioSetMaxExtSemTableSize(int);
 
 /* these are used both in the STACKVM & the COGMTVM */
-# if !defined(ioCurrentOSThread)
+#if !defined(ioCurrentOSThread)
 sqOSThread ioCurrentOSThread(void);
-# endif
-# if !defined(ioOSThreadsEqual)
-int  ioOSThreadsEqual(sqOSThread,sqOSThread);
-# endif
-# if !COGMTVM
+#endif
+#if !defined(ioOSThreadsEqual)
+int ioOSThreadsEqual(sqOSThread, sqOSThread);
+#endif
+#if !COGMTVM
 extern sqOSThread ioVMThread;
-# define getVMOSThread() ioVMThread
-# endif
+#define getVMOSThread() ioVMThread
+#endif
 #endif /* STACKVM || NewspeakVM */
 
 #if STACKVM
 /* Event polling via periodic heartbeat thread. */
-void  ioInitHeartbeat(void);
-int   ioHeartbeatMilliseconds(void);
-void  ioSetHeartbeatMilliseconds(int);
+void ioInitHeartbeat(void);
+int ioHeartbeatMilliseconds(void);
+void ioSetHeartbeatMilliseconds(int);
 unsigned long ioHeartbeatFrequency(int);
 #endif /* STACKVM */
 
@@ -303,13 +313,17 @@ extern char *thrlog[];
  * threads after myindex is obtained but before asprintf completes we can get
  * two threads using the same entry.  But this is good enough for now.
  */
-#define THRLOG(...) do { int myidx, nextidx; \
-	do { myidx = thrlogidx; \
-		 nextidx = (myidx+1)&(THRLOGSZ-1); \
-	} while (!sqCompareAndSwap(thrlogidx,myidx,nextidx)); \
-	if (thrlog[myidx]) free(thrlog[myidx]); \
-	asprintf(thrlog + myidx, __VA_ARGS__); \
-} while (0)
+#define THRLOG(...)                                                            \
+  do {                                                                         \
+    int myidx, nextidx;                                                        \
+    do {                                                                       \
+      myidx = thrlogidx;                                                       \
+      nextidx = (myidx + 1) & (THRLOGSZ - 1);                                  \
+    } while (!sqCompareAndSwap(thrlogidx, myidx, nextidx));                    \
+    if (thrlog[myidx])                                                         \
+      free(thrlog[myidx]);                                                     \
+    asprintf(thrlog + myidx, __VA_ARGS__);                                     \
+  } while (0)
 
 extern sqOSThread getVMOSThread(void);
 /* Please read the comment for CogThreadManager in the VMMaker package for
@@ -320,43 +334,48 @@ extern sqOSThread getVMOSThread(void);
  * # define sqOSSemaphore pthread_cond_t
  * # define ioOSThreadsEqual(a,b) pthread_equal(a,b)
  */
-# if !defined(ioGetThreadLocalThreadIndex)
+#if !defined(ioGetThreadLocalThreadIndex)
 long ioGetThreadLocalThreadIndex(void);
-# endif
-# if !defined(ioSetThreadLocalThreadIndex)
+#endif
+#if !defined(ioSetThreadLocalThreadIndex)
 void ioSetThreadLocalThreadIndex(long);
-# endif
+#endif
 
-# if !defined(ioNewOSThread)
-int  ioNewOSThread(void (*func)(void *), void *);
-# endif
-# if !defined(ioExitOSThread)
+#if !NO_VM_PROFILE && !defined(ioGetThreadCount)
+long ioGetThreadCount(void);
+sqOSThread getVMOSThreadAt(long index);
+#endif
+
+#if !defined(ioNewOSThread)
+int ioNewOSThread(void (*func)(void *), void *);
+#endif
+#if !defined(ioExitOSThread)
 void ioExitOSThread(sqOSThread thread);
-# endif
-# if !defined(ioReleaseOSThreadState)
+#endif
+#if !defined(ioReleaseOSThreadState)
 void ioReleaseOSThreadState(sqOSThread thread);
-# endif
-# if !defined(ioOSThreadIsAlive)
-int  ioOSThreadIsAlive(sqOSThread);
-# endif
-int  ioNewOSSemaphore(sqOSSemaphore *);
-# if !defined(ioDestroyOSSemaphore)
+#endif
+#if !defined(ioOSThreadIsAlive)
+int ioOSThreadIsAlive(sqOSThread);
+#endif
+int ioNewOSSemaphore(sqOSSemaphore *);
+#if !defined(ioDestroyOSSemaphore)
 void ioDestroyOSSemaphore(sqOSSemaphore *);
-# endif
+#endif
 void ioSignalOSSemaphore(sqOSSemaphore *);
 void ioWaitOnOSSemaphore(sqOSSemaphore *);
-int  ioNumProcessors(void);
-# if !defined(ioTransferTimeslice)
+int ioNumProcessors(void);
+#if !defined(ioTransferTimeslice)
 void ioTransferTimeslice(void);
-# endif
+#endif
 #endif /* COGMTVM */
 
 /* Profiling. */
-void  ioControlProfile(int on, void **vhp, long *nvb, void **ehp, long *neb);
-long  ioControlNewProfile(int on, unsigned long buffer_size);
-void  ioNewProfileStatus(sqInt *running, long *buffersize);
-long  ioNewProfileSamplesInto(void *sampleBuffer);
-void  ioClearProfile(void);
+void ioControlProfile(int on, void **vhp, long *nvb, void **ehp, long *neb);
+long ioControlNewProfile(int on, unsigned long buffer_size);
+void ioNewProfileStatus(sqInt *running, long *buffersize);
+long ioNewProfileThreadSamplesInto(long threadIndex, void *sampleBuffer);
+void ioClearProfile(void);
 
 /* Power management. */
 
@@ -366,7 +385,7 @@ sqInt ioDisablePowerManager(sqInt disableIfNonZero);
    In general, either set of input function can be supported,
    depending on the platform. This (first) set is state based
    and should be supported even on platforms that make use
-   of the newer event driven API to support older images 
+   of the newer event driven API to support older images
    without event support.
 */
 
@@ -378,159 +397,165 @@ sqInt ioDisablePowerManager(sqInt disableIfNonZero);
  */
 sqInt ioProcessEvents(void);
 
-
 /* User input recording II:
    The following functions and definition can be used on
    platform supporting events directly.
 */
 
 /* Event types. */
-#define EventTypeNone		0
-#define EventTypeMouse		1
-#define EventTypeKeyboard	2
-#define EventTypeDragDropFiles	3
-#define EventTypeMenu		4
-#define EventTypeWindow		5
-#define EventTypeComplex	6 /* For iPhone apps */
-#define EventTypeMouseWheel	7 /* optional; see sendWheelEvents & vm param 48 */
-#define EventTypePlugin		8 /* Terf: events from ActiveX Controls */
-
+#define EventTypeNone 0
+#define EventTypeMouse 1
+#define EventTypeKeyboard 2
+#define EventTypeDragDropFiles 3
+#define EventTypeMenu 4
+#define EventTypeWindow 5
+#define EventTypeComplex 6 /* For iPhone apps */
+#define EventTypeMouseWheel                                                    \
+  7                       /* optional; see sendWheelEvents & vm param 48       \
+                           */
+#define EventTypePlugin 8 /* Terf: events from ActiveX Controls */
 
 /* Keypress state for keyboard events. */
-#define EventKeyChar	0
-#define EventKeyDown	1
-#define EventKeyUp		2
+#define EventKeyChar 0
+#define EventKeyDown 1
+#define EventKeyUp 2
 
 /* Button definitions. */
-#define BlueButtonBit		 1
-#define YellowButtonBit		 2
-#define RedButtonBit		 4
-#define MoveRightButtonBit	 8
-#define MoveLeftButtonBit	16
+#define BlueButtonBit 1
+#define YellowButtonBit 2
+#define RedButtonBit 4
+#define MoveRightButtonBit 8
+#define MoveLeftButtonBit 16
 
 /* Modifier definitions. */
-#define ShiftKeyBit		1
-#define CtrlKeyBit		2
-#define OptionKeyBit	4
-#define CommandKeyBit	8
+#define ShiftKeyBit 1
+#define CtrlKeyBit 2
+#define OptionKeyBit 4
+#define CommandKeyBit 8
 
 /* generic input event */
 typedef struct sqInputEvent {
-  sqIntptr_t type;			/* type of event; either one of EventTypeXXX */
-  usqIntptr_t timeStamp;	/* time stamp */
+  sqIntptr_t type;       /* type of event; either one of EventTypeXXX */
+  usqIntptr_t timeStamp; /* time stamp */
   /* the interpretation of the following fields depend on the event type */
   sqIntptr_t unused1;
   sqIntptr_t unused2;
   sqIntptr_t unused3;
   sqIntptr_t unused4;
   sqIntptr_t unused5;
-  sqIntptr_t windowIndex;	/* SmallInteger used in image to identify a host window structure */
+  sqIntptr_t windowIndex; /* SmallInteger used in image to identify a host
+                             window structure */
 } sqInputEvent;
 
 /* mouse input event */
 typedef struct sqMouseEvent {
-  sqIntptr_t type;			/* EventTypeMouse */
-  usqIntptr_t timeStamp;	/* time stamp */
-  sqIntptr_t x;				/* mouse position x */
-  sqIntptr_t y;				/* mouse position y */
-  sqIntptr_t buttons;		/* combination of xxxButtonBit */
-  sqIntptr_t modifiers;		/* combination of xxxKeyBit */
-  sqIntptr_t nrClicks;		/* number of clicks in button downs - was reserved1 */
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t type;        /* EventTypeMouse */
+  usqIntptr_t timeStamp;  /* time stamp */
+  sqIntptr_t x;           /* mouse position x */
+  sqIntptr_t y;           /* mouse position y */
+  sqIntptr_t buttons;     /* combination of xxxButtonBit */
+  sqIntptr_t modifiers;   /* combination of xxxKeyBit */
+  sqIntptr_t nrClicks;    /* number of clicks in button downs - was reserved1 */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqMouseEvent;
 
 /* keyboard input event */
 typedef struct sqKeyboardEvent {
-  sqIntptr_t type;			/* EventTypeKeyboard */
-  usqIntptr_t timeStamp;	/* time stamp */
-  sqIntptr_t charCode;		/* character code in Mac Roman encoding */
-  sqIntptr_t pressCode;		/* press code; any of EventKeyXXX */
-  sqIntptr_t modifiers;		/* combination of xxxKeyBit */
-  sqIntptr_t utf32Code;		/* UTF-32 unicode value */
-  sqIntptr_t reserved1;		/* reserved for future use */
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t type;        /* EventTypeKeyboard */
+  usqIntptr_t timeStamp;  /* time stamp */
+  sqIntptr_t charCode;    /* character code in Mac Roman encoding */
+  sqIntptr_t pressCode;   /* press code; any of EventKeyXXX */
+  sqIntptr_t modifiers;   /* combination of xxxKeyBit */
+  sqIntptr_t utf32Code;   /* UTF-32 unicode value */
+  sqIntptr_t reserved1;   /* reserved for future use */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqKeyboardEvent;
 
 /* drop files event */
 typedef struct sqDragDropFilesEvent {
-  sqIntptr_t type;			/* EventTypeDropFiles */
-  usqIntptr_t timeStamp;	/* time stamp */
-  sqIntptr_t dragType;		/* one of DragXXX (see below) */
-  sqIntptr_t x;				/* mouse position x */
-  sqIntptr_t y;				/* mouse position y */
-  sqIntptr_t modifiers;		/* combination of xxxKeyBit */
-  sqIntptr_t numFiles;		/* number of files in transaction */
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t type;        /* EventTypeDropFiles */
+  usqIntptr_t timeStamp;  /* time stamp */
+  sqIntptr_t dragType;    /* one of DragXXX (see below) */
+  sqIntptr_t x;           /* mouse position x */
+  sqIntptr_t y;           /* mouse position y */
+  sqIntptr_t modifiers;   /* combination of xxxKeyBit */
+  sqIntptr_t numFiles;    /* number of files in transaction */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqDragDropFilesEvent;
 
-#define SQDragEnter		1 /* OS drag operation entered Squeak window	 */
-#define SQDragMove		2 /* OS drag operation moved within Squeak window */
-#define SQDragLeave		3 /* OS drag operation left Squeak window	 */
-#define SQDragDrop		4 /* OS drag operation dropped contents onto Squeak. */
-#define SQDragRequest	5 /* data request from other app. */
+#define SQDragEnter 1   /* OS drag operation entered Squeak window	 */
+#define SQDragMove 2    /* OS drag operation moved within Squeak window */
+#define SQDragLeave 3   /* OS drag operation left Squeak window	 */
+#define SQDragDrop 4    /* OS drag operation dropped contents onto Squeak. */
+#define SQDragRequest 5 /* data request from other app. */
 
 /* menu event */
 typedef struct sqMenuEvent {
-  sqIntptr_t type;			/* type of event; EventTypeMenu */
-  usqIntptr_t timeStamp;	/* time stamp */
+  sqIntptr_t type;       /* type of event; EventTypeMenu */
+  usqIntptr_t timeStamp; /* time stamp */
   /* the interpretation of the following fields depend on the event type */
-  sqIntptr_t menu;			/* platform-dependent to indicate which menu was picked */
-  sqIntptr_t menuItem;		/* given a menu having 1 to N items this maps to the menu item number */
-  sqIntptr_t reserved1;		/* reserved for future use */
-  sqIntptr_t reserved2;		/* reserved for future use */
-  sqIntptr_t reserved3;		/* reserved for future use */
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t menu; /* platform-dependent to indicate which menu was picked */
+  sqIntptr_t menuItem; /* given a menu having 1 to N items this maps to the menu
+                          item number */
+  sqIntptr_t reserved1;   /* reserved for future use */
+  sqIntptr_t reserved2;   /* reserved for future use */
+  sqIntptr_t reserved3;   /* reserved for future use */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqMenuEvent;
 
 /* window action event */
 typedef struct sqWindowEvent {
-  sqIntptr_t type;			/* type of event;  EventTypeWindow */
-  usqIntptr_t timeStamp;	/* time stamp */
+  sqIntptr_t type;       /* type of event;  EventTypeWindow */
+  usqIntptr_t timeStamp; /* time stamp */
   /* the interpretation of the following fields depend on the event type */
-  sqIntptr_t action;		/* one of WindowEventXXX (see below) */
-  sqIntptr_t value1;		/* used for rectangle edges (left) */
-  sqIntptr_t value2;		/* used for rectangle edges (top) */
-  sqIntptr_t value3;		/* used for rectangle edges (right) */
-  sqIntptr_t value4;		/* used for rectangle edges (bottom) */
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t action;      /* one of WindowEventXXX (see below) */
+  sqIntptr_t value1;      /* used for rectangle edges (left) */
+  sqIntptr_t value2;      /* used for rectangle edges (top) */
+  sqIntptr_t value3;      /* used for rectangle edges (right) */
+  sqIntptr_t value4;      /* used for rectangle edges (bottom) */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqWindowEvent;
 
-#define WindowEventMetricChange	1	/* size or position of window changed
-									 * value1-4 are left/top/right/bottom
-									 */
-#define WindowEventClose		2	/* window close icon pressed */
-#define WindowEventIconise		3	/* window iconised or hidden etc */
-#define WindowEventActivated	4	/* window made active - some platforms only
-									 * do not rely upon this */
-#define WindowEventPaint		5	/* window area (in value1-4) needs updating.
-									 * Some platforms do not need to send this,
-									 * do not rely on it in image */
-#define WindowEventChangeScreen	6	/* window moved to new screen.
-									 * rect args are dimensions of new screen */
-#define WindowEventDeactivated	7	/* window made inactive - the opposite of 
-									 * WindowEventActivated */
+#define WindowEventMetricChange                                                \
+  1                          /* size or position of window changed             \
+                              * value1-4 are left/top/right/bottom             \
+                              */
+#define WindowEventClose 2   /* window close icon pressed */
+#define WindowEventIconise 3 /* window iconised or hidden etc */
+#define WindowEventActivated                                                   \
+  4 /* window made active - some platforms only                                \
+     * do not rely upon this */
+#define WindowEventPaint                                                       \
+  5 /* window area (in value1-4) needs updating.                               \
+     * Some platforms do not need to send this,                                \
+     * do not rely on it in image */
+#define WindowEventChangeScreen                                                \
+  6 /* window moved to new screen.                                             \
+     * rect args are dimensions of new screen */
+#define WindowEventDeactivated                                                 \
+  7 /* window made inactive - the opposite of                                  \
+     * WindowEventActivated */
 
 typedef struct sqComplexEvent {
-  sqIntptr_t type;			/* type of event;  EventTypeComplex */
-  usqIntptr_t timeStamp;	/* time stamp */
+  sqIntptr_t type;       /* type of event;  EventTypeComplex */
+  usqIntptr_t timeStamp; /* time stamp */
   /* the interpretation of the following fields depend on the event type */
-  sqIntptr_t action;		/* one of ComplexEventXXX (see below) */
-  sqIntptr_t objectPointer;	/* used to point to object */
+  sqIntptr_t action;        /* one of ComplexEventXXX (see below) */
+  sqIntptr_t objectPointer; /* used to point to object */
   sqIntptr_t unused1;
   sqIntptr_t unused2;
   sqIntptr_t unused3;
-  sqIntptr_t windowIndex;	/* host window structure */
+  sqIntptr_t windowIndex; /* host window structure */
 } sqComplexEvent;
 
-#define ComplexEventTypeTouchsDown			1
-#define ComplexEventTypeTouchsUp			2
-#define ComplexEventTypeTouchsMoved			3
-#define ComplexEventTypeTouchsStationary	4
-#define ComplexEventTypeTouchsCancelled		5
-#define ComplexEventTypeAccelerationData	6
-#define ComplexEventTypeLocationData		7
-#define ComplexEventTypeApplicationData		8
-
+#define ComplexEventTypeTouchsDown 1
+#define ComplexEventTypeTouchsUp 2
+#define ComplexEventTypeTouchsMoved 3
+#define ComplexEventTypeTouchsStationary 4
+#define ComplexEventTypeTouchsCancelled 5
+#define ComplexEventTypeAccelerationData 6
+#define ComplexEventTypeLocationData 7
+#define ComplexEventTypeApplicationData 8
 
 /* Set an asynchronous input semaphore index for events. */
 sqInt ioSetInputSemaphore(sqInt semaIndex);
@@ -539,10 +564,10 @@ sqInt ioGetNextEvent(sqInputEvent *evt);
 
 /* Log the event procesing chain. */
 #if defined(DEBUG_EVENT_CHAIN)
-# define LogEventChain(parms) fprintf parms
-# define dbgEvtChF stderr
+#define LogEventChain(parms) fprintf parms
+#define dbgEvtChF stderr
 #else
-# define LogEventChain(parms) 0
+#define LogEventChain(parms) 0
 #endif
 
 /* Image file and VM path names. */
@@ -569,60 +594,64 @@ sqInt clipboardSize(void);
 sqInt clipboardReadIntoAt(sqInt count, sqInt byteArrayIndex, sqInt startIndex);
 sqInt clipboardWriteFromAt(sqInt count, sqInt byteArrayIndex, sqInt startIndex);
 
-
 /* System attributes. */
 const char *getAttributeString(sqInt indexNumber);
 
 /*** Pluggable primitive support. ***/
 
 /* NOTE: The following functions are those implemented by sqNamedPrims.c */
-void *ioLoadExternalFunctionOfLengthFromModuleOfLength
-		(sqInt functionNameIndex, sqInt functionNameLength,
-		 sqInt moduleNameIndex, sqInt moduleNameLength);
+void *ioLoadExternalFunctionOfLengthFromModuleOfLength(sqInt functionNameIndex,
+                                                       sqInt functionNameLength,
+                                                       sqInt moduleNameIndex,
+                                                       sqInt moduleNameLength);
 #if SPURVM
-void *ioLoadExternalFunctionOfLengthFromModuleOfLengthMetadataInto
-	(sqInt functionNameIndex, sqInt functionNameLength,
-	 sqInt moduleNameIndex,   sqInt moduleNameLength, sqInt *metadataPtr);
+void *ioLoadExternalFunctionOfLengthFromModuleOfLengthMetadataInto(
+    sqInt functionNameIndex, sqInt functionNameLength, sqInt moduleNameIndex,
+    sqInt moduleNameLength, sqInt *metadataPtr);
 #endif
-sqInt  ioUnloadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
-void  *ioLoadFunctionFrom(char *functionName, char *pluginName);
-sqInt  ioShutdownAllModules(void);
-sqInt  ioUnloadModule(char *moduleName);
-sqInt  ioUnloadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
-char  *ioListBuiltinModule(sqInt moduleIndex);
-char  *ioListLoadedModule(sqInt moduleIndex);
+sqInt ioUnloadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
+void *ioLoadFunctionFrom(char *functionName, char *pluginName);
+sqInt ioShutdownAllModules(void);
+sqInt ioUnloadModule(char *moduleName);
+sqInt ioUnloadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
+char *ioListBuiltinModule(sqInt moduleIndex);
+char *ioListLoadedModule(sqInt moduleIndex);
 /* The next three for the FFI, also implemented in sqNamedPrims.c. */
-void  *ioLoadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
-void  *ioLoadSymbolOfLengthFromModule(sqInt functionNameIndex, sqInt functionNameLength, void *moduleHandle);
+void *ioLoadModuleOfLength(sqInt moduleNameIndex, sqInt moduleNameLength);
+void *ioLoadSymbolOfLengthFromModule(sqInt functionNameIndex,
+                                     sqInt functionNameLength,
+                                     void *moduleHandle);
 sqInt ioCanCatchFFIExceptions();
 
 /* The next three functions must be implemented by sqXYZExternalPrims.c */
 /* ioLoadModule:
-	Load a module from disk.
-	WARNING: this always loads a *new* module. Don't even attempt to find
-	a loaded one.
-	WARNING: never primitiveFail() within, just return 0
+        Load a module from disk.
+        WARNING: this always loads a *new* module. Don't even attempt to find
+        a loaded one.
+        WARNING: never primitiveFail() within, just return 0
 */
 void *ioLoadModule(char *pluginName);
 
 /* ioFindExternalFunctionIn[MetadataInto]:
-	Find the function with the given name in the moduleHandle.
-	WARNING: never primitiveFail() within, just return 0.
-	Note in Spur takes an extra parameter which is defaulted to 0.
+        Find the function with the given name in the moduleHandle.
+        WARNING: never primitiveFail() within, just return 0.
+        Note in Spur takes an extra parameter which is defaulted to 0.
 */
 #if SPURVM
-void *ioFindExternalFunctionInMetadataInto(char *lookupName, void *moduleHandle, sqInt *metadataPtr);
-# define ioFindExternalFunctionIn(ln,mh) ioFindExternalFunctionInMetadataInto(ln,mh,0)
-# define NullSpurMetadata -256 // -1 << 8, but shifting -ve values is undefined
-# define SpurPrimitiveMetadataType signed short
-# define validSpurPrimitiveMetadata(m) ((((m) >> 8) >= -1) && (((m) >> 8) <= 5))
+void *ioFindExternalFunctionInMetadataInto(char *lookupName, void *moduleHandle,
+                                           sqInt *metadataPtr);
+#define ioFindExternalFunctionIn(ln, mh)                                       \
+  ioFindExternalFunctionInMetadataInto(ln, mh, 0)
+#define NullSpurMetadata -256 // -1 << 8, but shifting -ve values is undefined
+#define SpurPrimitiveMetadataType signed short
+#define validSpurPrimitiveMetadata(m) ((((m) >> 8) >= -1) && (((m) >> 8) <= 5))
 #else
 void *ioFindExternalFunctionIn(char *lookupName, void *moduleHandle);
 #endif
 
 /* ioFreeModule:
-	Free the module with the associated handle.
-	WARNING: never primitiveFail() within, just return 0.
+        Free the module with the associated handle.
+        WARNING: never primitiveFail() within, just return 0.
 */
 sqInt ioFreeModule(void *moduleHandle);
 

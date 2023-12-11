@@ -312,7 +312,7 @@ static volatile machine_state beatState = nascent;
 static int beatMilliseconds = DEFAULT_BEAT_MS;
 static struct timespec beatperiod = { 0, DEFAULT_BEAT_MS * 1000 * 1000 };
 
-static void *
+static void
 beatStateMachine(void *careLess)
 {
     int er;
@@ -370,7 +370,6 @@ beatStateMachine(void *careLess)
 		heartbeat();
 	}
 	beatState = dead;
-	return 0;
 }
 
 void
@@ -378,7 +377,6 @@ ioInitHeartbeat()
 {
 	int er;
 	struct timespec halfAMo;
-	pthread_t careLess;
 
 	/* First time through choose a policy and priority for the heartbeat thread,
 	 * and install ioInitHeartbeat via pthread_atfork to be run again in a forked
@@ -406,10 +404,12 @@ ioInitHeartbeat()
 
 	halfAMo.tv_sec  = 0;
 	halfAMo.tv_nsec = 1000 * 100;
-	if ((er= pthread_create(&careLess,
-							(const pthread_attr_t *)0,
-							beatStateMachine,
-							0))) {
+#if COGMTVM
+	if ((er = ioNewOSThread(beatStateMachine, NULL))) {
+#else
+	pthread_t careLess;
+	if ((er = pthread_create(&careLess, NULL, beatStateMachine, NULL))) {
+#endif
 		errno = er;
 		perror("beat thread creation failed");
 		exit(errno);

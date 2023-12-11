@@ -3,7 +3,7 @@ set -e
 # Spur VM with VM profiler and threaded heartbeat
 INSTALLDIR=sqcogspur64linuxht
 # Some gcc versions create a broken VM using -O2
-OPT="-g -O2 -DNDEBUG -DDEBUGVM=0"
+OPT="-g -O2 -DNDEBUG -DDEBUGVM=0  -Wno-error=implicit-function-declaration"
 
 CFLAGS="$OPT -msse2"
 LIBS=""

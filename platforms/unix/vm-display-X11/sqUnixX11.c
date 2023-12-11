@@ -4008,6 +4008,8 @@ void initColourmap(int index, int red, int green, int blue)
     }
 }
 
+extern void error(const char*);
+
 void initPixmap(void)
 {
   int count;

@@ -1081,8 +1081,9 @@ crashDumpFile()
 }
 
 static void
-sigusr1(int sig, siginfo_t *info, ucontext_t *uap)
+sigusr1(int sig, siginfo_t *info, void *context)
 {
+	ucontext_t *uap = (ucontext_t *) context;
 	int saved_errno = errno;
 	time_t now = time(NULL);
 	char ctimebuf[32];
@@ -1109,8 +1110,9 @@ sqInt
 ioCanCatchFFIExceptions() { return 1; }
 
 static void
-sigsegv(int sig, siginfo_t *info, ucontext_t *uap)
+sigsegv(int sig, siginfo_t *info, void *context)
 {
+	ucontext_t *uap = (ucontext_t *) context;
 	time_t now = time(NULL);
 	char ctimebuf[32];
 	FILE *crashdump;

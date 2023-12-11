@@ -46,6 +46,7 @@ extern struct VirtualMachine  *interpreterProxy;
 extern int						uxDropFileCount;
 extern char					  **uxDropFileNames;
 extern void						dndReceived(char *fileName);
+extern usqInt					fileRecordSize(void);
 
 #if defined(SQUEAK_INTERNAL_PLUGIN)
 extern SQFile * fileValueOf(sqInt objectPointer);

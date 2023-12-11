@@ -33,14 +33,43 @@
 
 #define pthreadperror(s,e) fprintf(stderr,"%s: %s\n", s, strerror(e))
 
+#if !NO_VM_PROFILE
+#include <stdlib.h>
+
+static long threadCount = 0;
+static pthread_t *threads = NULL;
+
+long ioGetThreadCount() {
+	return threadCount;
+}
+
+pthread_t getVMOSThreadAt(long index) {
+	return threads[index];
+}
+#endif
+
 int
 ioNewOSThread(void (*func)(void *), void *arg)
 {
 	pthread_t newThread;
+	pthread_t *newThreadPtr = &newThread;
+#if !NO_VM_PROFILE
+	// If there's no thread list yet, we're the main thread and should remember
+	// to store ourselves as such.
+	if (threads == NULL) {
+		threadCount = 2;
+		threads = calloc(threadCount, sizeof(pthread_t));
+		threads[0] = pthread_self();
+	}
+	else {
+		threads = realloc(threads, ++threadCount * sizeof(pthread_t));
+	}
+	newThreadPtr = &threads[threadCount - 1];
+#endif
 	int err;
 
 	if ((err = pthread_create(
-				&newThread,				/* pthread_t *new_thread_ID */ 
+				newThreadPtr,				/* pthread_t *new_thread_ID */ 
 				0,						/* const pthread_attr_t *attr */
 				(void *(*)(void *))func,/* void * (*thread_execp)(void *) */
 				(void *)arg				/* void *arg */))) {

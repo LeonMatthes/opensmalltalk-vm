@@ -624,6 +624,97 @@ sqFileDescriptorType(int fdNum)
 	return 3;
 }
 
+typedef struct threaded_file_read_t {
+	// arguments
+	SQFile *f;
+	FILE *file;
+	size_t count;
+	char *byteArrayIndex;
+	size_t startIndex;
+	sqInt readSemaphoreIndex;
+} threaded_file_read;
+
+
+static void *readFileInThread(void *void_arguments)
+{
+	size_t bytesRead;
+	threaded_file_read *args = (threaded_file_read *) void_arguments;
+
+	// We write the bytes Read into the first size_t bytes of the byteArray.
+	size_t *bytesReadDst = (size_t*) args->byteArrayIndex;
+	size_t count = args->count - sizeof(size_t);
+	char *dst = args->byteArrayIndex + args->startIndex + sizeof(size_t);
+	if (args->f->isStdioStream) {
+		/* Line buffering in fread can't be relied upon, at least on Mac OS X
+		 * and mingw win32.  So do it the hard way.
+		 */
+		bytesRead = 0;
+		do {
+			clearerr(args->file);
+			if (fread(dst, 1, 1, args->file) == 1)
+				bytesRead += 1;
+		}
+		while (bytesRead <= 0 && ferror(args->file) && errno == EINTR);
+	}
+	else
+		do {
+			clearerr(args->file);
+			bytesRead = fread(dst, 1, count, args->file);
+		}
+		while (bytesRead <= 0 && ferror(args->file) && errno == EINTR);
+	/* support for skipping back 1 character for stdio streams */
+	if (args->f->isStdioStream)
+		if (bytesRead > 0)
+			args->f->lastChar = dst[bytesRead-1];
+
+	args->f->lastOp = READ_OP;
+
+	// write the bytes read into the bytearray given as argument
+	*bytesReadDst = bytesRead;
+
+	interpreterProxy->signalSemaphoreWithIndex(args->readSemaphoreIndex);
+
+	free(args);
+
+	return NULL;
+}
+
+#include <pthread.h>
+
+sqInt sqThreadedFileReadIntoAtSignalling(SQFile *f, size_t count, char *byteArrayIndex, size_t startIndex, sqInt readSemaphoreIndex)
+{
+	/* Read count bytes from the given file into byteArray starting at
+	   startIndex. byteArray is the address of the first byte of a
+	   Squeak bytes object (e.g. String or ByteArray). startIndex
+	   is a zero-based index; that is a startIndex of 0 starts writing
+	   at the first byte of byteArray.
+	*/
+	FILE *file;
+
+	if (!sqFileValid(f))
+		return interpreterProxy->success(false);
+	pentry(sqThreadedFileReadIntoAtSignalling);
+	file = getFile(f);
+	if (f->writable) {
+		if (f->isStdioStream)
+			return interpreterProxy->success(false);
+		if (f->lastOp == WRITE_OP)
+			fseeko(file, 0, SEEK_CUR);  /* seek between writing and reading */
+	}
+
+	threaded_file_read *read_args = calloc(1, sizeof(threaded_file_read));
+	read_args->f = f;
+	read_args->file = file;
+	read_args->count = count;
+	read_args->byteArrayIndex = byteArrayIndex;
+	read_args->startIndex = startIndex;
+	read_args->readSemaphoreIndex = readSemaphoreIndex;
+
+	pthread_t careLess;
+	pthread_create(&careLess, NULL, &readFileInThread, (void*) read_args);
+
+	return pexit(0);
+}
 
 size_t
 sqFileReadIntoAt(SQFile *f, size_t count, char *byteArrayIndex, size_t startIndex)

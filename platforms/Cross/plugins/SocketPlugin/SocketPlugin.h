@@ -1,5 +1,7 @@
 /* squeak socket support header file */
 
+#include <stdbool.h>
+
 /* module initialization/shutdown */
 sqInt socketInit(void);
 sqInt socketShutdown(void);
@@ -61,6 +63,7 @@ void  sqResolverStartAddrLookup(sqInt address);
 void  sqResolverStartNameLookup(char *hostName, sqInt nameSize);
 sqInt sqResolverStatus(void);
 void  sqSocketAbortConnection(SocketPtr s);
+void  sqSocketCloseConnectionisPinned(SocketPtr s, bool isPinned);
 void  sqSocketCloseConnection(SocketPtr s);
 sqInt sqSocketConnectionStatus(SocketPtr s);
 void  sqSocketConnectToPort(SocketPtr s, sqInt addr, sqInt port);

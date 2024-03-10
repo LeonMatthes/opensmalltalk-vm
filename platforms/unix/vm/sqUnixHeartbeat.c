@@ -372,6 +372,14 @@ beatStateMachine(void *careLess)
 	beatState = dead;
 }
 
+// For compatibility with pthread_create we need to return a "void*";
+static void* beatStateMachinePthread(void *param)
+{
+	beatStateMachine(param);
+	return NULL;
+}
+
+
 void
 ioInitHeartbeat()
 {
@@ -408,7 +416,7 @@ ioInitHeartbeat()
 	if ((er = ioNewOSThread(beatStateMachine, NULL))) {
 #else
 	pthread_t careLess;
-	if ((er = pthread_create(&careLess, NULL, beatStateMachine, NULL))) {
+	if ((er = pthread_create(&careLess, NULL, &beatStateMachinePthread, NULL))) {
 #endif
 		errno = er;
 		perror("beat thread creation failed");

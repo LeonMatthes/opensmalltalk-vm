@@ -43,6 +43,7 @@
  */
 
 #include "sq.h"
+#include "sqVirtualMachine.h"
 #include "sqAssert.h"
 #include "SocketPlugin.h"
 #include "sqaio.h"
@@ -963,8 +964,7 @@ sqSocketAcceptFromRecvBytesSendBytesSemaIDReadSemaIDWriteSemaID(SocketPtr s, Soc
 
 /* close the socket */
 
-void
-sqSocketCloseConnection(SocketPtr s)
+void  sqSocketCloseConnectionisPinned(SocketPtr s, bool isPinned)
 {
   int result= 0;
 
@@ -978,7 +978,18 @@ sqSocketCloseConnection(SocketPtr s)
 
   aioDisable(SOCKET(s));
   SOCKETSTATE(s)= ThisEndClosed;
+
+  void* handle;
+  if(isPinned) {
+	  handle = interpreterProxy->disownVM(DisownVMForThreading);
+  }
+
   result= close(SOCKET(s));
+
+  if(isPinned) {
+	  interpreterProxy->ownVM(handle);
+  }
+
   if ((result == -1) && (errno != EWOULDBLOCK))
 	{
 	  /* error */
@@ -1001,6 +1012,12 @@ sqSocketCloseConnection(SocketPtr s)
 	  aioHandle(SOCKET(s), closeHandler, AIO_RWX);  /* => close() done */
 	  FPRINTF((stderr, "closeConnection: deferred [aioHandle is set]\n"));
 	}
+}
+
+void
+sqSocketCloseConnection(SocketPtr s)
+{
+	sqSocketCloseConnectionisPinned(s, false);
 }
 
 

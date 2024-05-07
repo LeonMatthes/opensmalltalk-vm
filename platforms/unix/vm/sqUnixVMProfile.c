@@ -100,10 +100,10 @@ static void *
 profileStateMachine(void *ignored)
 {
 	int er;
-	if ((er = pthread_setschedparam(pthread_self(),
-									profThreadPolicy,
-									&profThreadPriority)))
-		bail_out(er,"pthread_setschedparam failed");
+	/* if ((er = pthread_setschedparam(pthread_self(), */
+	/*                                 profThreadPolicy, */
+	/*                                 &profThreadPriority))) */
+	/*     bail_out(er,"pthread_setschedparam failed"); */
 
 	profileState = quiescent;
 	while (profileState != dead) {
